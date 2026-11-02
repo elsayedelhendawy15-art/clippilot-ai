@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MR Market Intelligence</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #080d18;
+      color: #eef3ff;
+      font-family: Arial, sans-serif;
+    }
+    .container { max-width: 1100px; margin: auto; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    h1 { font-size: 23px; margin: 0; }
+    .status {
+      color: #43dda1;
+      border: 1px solid #245d4c;
+      background: #102b25;
+      padding: 9px 13px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+    .subtitle { color: #8996ad; margin: 12px 0 24px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+      gap: 14px;
+    }
+    .card {
+      background: #111a2b;
+      border: 1px solid #26334a;
+      border-radius: 15px;
+      padding: 20px;
+    }
+    .label { color: #9ba9c0; font-size: 14px; }
+    .value { font-size: 25px; font-weight: bold; margin-top: 13px; }
+    .section { margin-top: 28px; }
+    h2 { font-size: 18px; margin-bottom: 14px; }
+    .muted { color: #9ba9c0; line-height: 1.8; }
+    button {
+      background: #2468dc;
+      color: white;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 18px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    pre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #9ba9c0;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>MR Market Intelligence</h1>
+    <span class="status" id="status">جاري الاتصال...</span>
+  </header>
+
+  <p class="subtitle">لوحة مراقبة السوق والمراجحة — الإصدار التجريبي</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">حالة النظام</div>
+      <div class="value" id="system">جاري الفحص</div>
+    </div>
+    <div class="card">
+      <div class="label">وضع التداول</div>
+      <div class="value">PAPER ONLY</div>
+    </div>
+    <div class="card">
+      <div class="label">فرص المراجحة</div>
+      <div class="value">بانتظار البيانات</div>
+    </div>
+    <div class="card">
+      <div class="label">الأرباح التجريبية</div>
+      <div class="value">0.00 USDT</div>
+    </div>
+  </div>
+
+  <div class="section card">
+    <h2>مراقبة البيانات</h2>
+    <p class="muted">آخر حدث مستلم من محرك التداول:</p>
+    <pre id="event">لم يتم استلام بيانات حتى الآن.</pre>
+    <button onclick="checkServer()">تحديث الاتصال</button>
+  </div>
+
+  <div class="section card">
+    <h2>تنبيهات النظام</h2>
+    <p class="muted" id="message">نظام المراقبة جاهز. ننتظر توصيل محرك Python.</p>
+  </div>
+</div>
+
+<script>
+const API = "https://clippilot-ai.elsayedelhendawy15.workers.dev";
+
+async function checkServer() {
+  const status = document.getElementById("status");
+  const system = document.getElementById("system");
+  const event = document.getElementById("event");
+  const message = document.getElementById("message");
+
+  status.textContent = "جاري الاتصال...";
+  try {
+    const health = await fetch(API + "/health");
+    if (!health.ok) throw new Error("Server error");
+
+    const data = await fetch(API + "/latest");
+    if (!data.ok) throw new Error("Data error");
+
+    const result = await data.json();
+    status.textContent = "متصل";
+    system.textContent = "يعمل";
+    event.textContent = JSON.stringify(result, null, 2);
+    message.textContent = result.event
+      ? "تم استلام حدث من المحرك."
+      : "الاتصال ناجح، لكن لم تصل أحداث السوق بعد.";
+  } catch (error) {
+    status.textContent = "غير متصل";
+    system.textContent = "خطأ اتصال";
+    message.textContent = "تعذر الاتصال. تحقق من إعدادات Worker وCORS.";
+  }
+}
+
+checkServer();
+setInterval(checkServer, 15000);
+</script>
+</body>
+</html>
