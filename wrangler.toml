@@ -1,0 +1,3 @@
+name = "mr-market-intelligence"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
