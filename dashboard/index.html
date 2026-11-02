@@ -2,144 +2,482 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MR Market Intelligence</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #080d18;
-      color: #eef3ff;
-      font-family: Arial, sans-serif;
-    }
-    .container { max-width: 1100px; margin: auto; }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 28px;
-    }
-    h1 { font-size: 23px; margin: 0; }
-    .status {
-      color: #43dda1;
-      border: 1px solid #245d4c;
-      background: #102b25;
-      padding: 9px 13px;
-      border-radius: 20px;
-      font-size: 13px;
-    }
-    .subtitle { color: #8996ad; margin: 12px 0 24px; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
-      gap: 14px;
-    }
-    .card {
-      background: #111a2b;
-      border: 1px solid #26334a;
-      border-radius: 15px;
-      padding: 20px;
-    }
-    .label { color: #9ba9c0; font-size: 14px; }
-    .value { font-size: 25px; font-weight: bold; margin-top: 13px; }
-    .section { margin-top: 28px; }
-    h2 { font-size: 18px; margin-bottom: 14px; }
-    .muted { color: #9ba9c0; line-height: 1.8; }
-    button {
-      background: #2468dc;
-      color: white;
-      border: 0;
-      border-radius: 9px;
-      padding: 12px 18px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-    pre {
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      color: #9ba9c0;
-      font-size: 12px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050a13">
+<title>MR Market Intelligence Engine</title>
+
+<style>
+:root {
+  --bg:#050a13;
+  --panel:#0b1422;
+  --panel2:#101d2e;
+  --border:#203149;
+  --gold:#f5bd3f;
+  --green:#16d995;
+  --red:#ff596b;
+  --blue:#24a9ed;
+  --purple:#a77aff;
+  --muted:#91a2b9;
+  --text:#edf4ff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Arial,Tahoma,sans-serif;
+}
+button{font:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{
+  width:235px;flex-shrink:0;background:#080f1c;
+  border-left:1px solid var(--border);
+  padding:20px 13px;display:flex;flex-direction:column;
+}
+.brand{text-align:center;padding:8px 5px 25px}
+.logo{
+  width:62px;height:62px;margin:auto auto 10px;
+  display:grid;place-items:center;border-radius:18px;
+  background:linear-gradient(145deg,#49330b,#111b2b);
+  border:1px solid var(--gold);color:var(--gold);
+  font-size:25px;font-weight:bold;
+}
+.brand h2{font-size:18px;color:var(--gold);margin:5px 0}
+.brand p{font-size:11px;color:var(--muted);margin:5px 0}
+.nav{display:grid;gap:7px}
+.nav button{
+  color:#c4d0e0;background:transparent;border:1px solid transparent;
+  border-radius:10px;padding:13px 10px;text-align:right;
+  cursor:pointer;display:flex;align-items:center;gap:11px;
+}
+.nav button span:first-child{font-size:19px;width:25px;text-align:center}
+.nav button.active{
+  color:var(--gold);border-color:#8d671d;
+  background:linear-gradient(90deg,#392a10,#171a20);
+  box-shadow:0 0 15px #eeb73520;
+}
+.nav button:hover{background:#172337}
+.side-bottom{
+  margin-top:auto;border:1px solid #18533f;background:#0b211c;
+  border-radius:12px;padding:14px;text-align:center;
+}
+.side-bottom strong{display:block;color:var(--green);margin:7px}
+.side-bottom small{color:var(--muted)}
+main{flex:1;min-width:0;padding:23px}
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;flex-wrap:wrap;margin-bottom:22px;
+}
+.heading h1{font-size:23px;margin:0;color:var(--gold)}
+.heading p{font-size:12px;color:var(--muted);margin:8px 0 0}
+.top-actions{display:flex;align-items:center;gap:12px}
+.live{font-size:13px;color:var(--green)}
+.live:before{
+  content:"";display:inline-block;width:9px;height:9px;
+  background:var(--green);border-radius:50%;margin-left:7px;
+  box-shadow:0 0 10px var(--green);
+}
+.pill{
+  padding:8px 12px;border:1px solid var(--border);
+  border-radius:20px;font-size:12px;color:var(--gold);
+}
+.grid{display:grid;gap:13px}
+.metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
+.card{
+  background:linear-gradient(145deg,#101d2d,#091321);
+  border:1px solid var(--border);border-radius:13px;
+  padding:16px;min-width:0;
+}
+.metric{min-height:105px}
+.metric-head{font-size:12px;color:var(--muted)}
+.metric-value{font-size:22px;font-weight:bold;margin-top:17px}
+.metric-note{font-size:11px;color:var(--muted);margin-top:8px}
+.green{color:var(--green)}
+.gold{color:var(--gold)}
+.blue{color:var(--blue)}
+.red{color:var(--red)}
+.purple{color:var(--purple)}
+.middle{
+  grid-template-columns:minmax(0,1.8fr) minmax(260px,1fr);
+  margin-top:14px;
+}
+.section-title{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;margin-bottom:15px;
+}
+.section-title h3{font-size:15px;margin:0}
+.section-title small{font-size:11px;color:var(--muted)}
+.chart-info{
+  display:flex;gap:15px;flex-wrap:wrap;
+  color:var(--muted);font-size:11px;margin:10px 0;
+}
+.chart-placeholder{
+  height:260px;border-radius:9px;border:1px dashed #2a405d;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:20px;
+  background:repeating-linear-gradient(
+    0deg,transparent,transparent 39px,#24344b55 40px
+  );
+}
+.chart-placeholder strong{display:block;color:var(--gold);margin-bottom:9px}
+.chart-placeholder p{font-size:12px;color:var(--muted);line-height:1.8}
+table{width:100%;border-collapse:collapse;min-width:440px}
+th,td{
+  padding:12px 9px;text-align:right;border-bottom:1px solid #1d2b40;
+  font-size:12px;white-space:nowrap;
+}
+th{color:var(--muted);font-weight:normal;background:#101b2a}
+td{color:#dce6f5}
+.table-wrap{overflow-x:auto}
+.empty{
+  text-align:center;color:var(--muted);padding:25px 10px;
+  font-size:12px;line-height:1.9;
+}
+.lower{
+  grid-template-columns:1.2fr 1fr 1fr;margin-top:14px;
+}
+.stat-line{
+  display:flex;justify-content:space-between;gap:10px;
+  padding:12px 0;border-bottom:1px solid #1d2b40;
+  font-size:12px;
+}
+.stat-line span:first-child{color:var(--muted)}
+.event{
+  display:flex;gap:9px;align-items:flex-start;
+  padding:10px 0;border-bottom:1px solid #1d2b40;
+  font-size:12px;color:var(--muted);
+}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:4px}
+.footer{
+  color:#65768c;text-align:center;font-size:10px;
+  margin:22px 0 5px;
+}
+.refresh{
+  border:1px solid #73551d;background:#211b10;
+  color:var(--gold);border-radius:8px;padding:8px 12px;
+  cursor:pointer;font-size:12px;
+}
+.refresh:active{transform:scale(.97)}
+.page-section{display:none}
+.page-section.show{display:block}
+.mobile-menu{display:none}
+@media(max-width:1100px){
+  .metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .lower{grid-template-columns:1fr 1fr}
+}
+@media(max-width:750px){
+  .sidebar{
+    position:fixed;z-index:10;right:-245px;top:0;bottom:0;
+    transition:right .25s;width:230px;
+  }
+  .sidebar.open{right:0}
+  main{padding:15px;width:100%}
+  .mobile-menu{display:block}
+  .heading h1{font-size:18px}
+  .middle,.lower{grid-template-columns:1fr}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .metric{min-height:95px;padding:13px}
+  .metric-value{font-size:19px}
+  .chart-placeholder{height:210px}
+}
+@media(max-width:380px){
+  .metrics{grid-template-columns:1fr 1fr}
+  .topbar{align-items:flex-start}
+}
+</style>
 </head>
+
 <body>
-<div class="container">
-  <header>
-    <h1>MR Market Intelligence</h1>
-    <span class="status" id="status">جاري الاتصال...</span>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="logo">MR</div>
+    <h2>MR INTELLIGENCE</h2>
+    <p>AI POWERED MARKET ANALYSIS</p>
+  </div>
+
+  <nav class="nav">
+    <button class="active" data-page="overview"><span>⌂</span> الرئيسية</button>
+    <button data-page="market"><span>▥</span> تحليل السوق</button>
+    <button data-page="arbitrage"><span>⚖</span> فرص المراجحة</button>
+    <button data-page="signals"><span>ϟ</span> إشارات التداول</button>
+    <button data-page="paper"><span>▣</span> التداول التجريبي</button>
+    <button data-page="analytics"><span>◔</span> تحليل الأداء</button>
+    <button data-page="monitor"><span>⚙</span> مراقبة النظام</button>
+    <button data-page="settings"><span>☷</span> الإعدادات</button>
+  </nav>
+
+  <div class="side-bottom">
+    <div>🛡️ PAPER TRADING</div>
+    <strong>ACTIVE</strong>
+    <small>وضع تجريبي فقط</small>
+  </div>
+</aside>
+
+<main>
+  <header class="topbar">
+    <div class="heading">
+      <h1>MR Market Intelligence Engine</h1>
+      <p>Real-Time Analysis · Arbitrage · Quantitative Intelligence</p>
+    </div>
+    <div class="top-actions">
+      <button class="refresh mobile-menu" onclick="toggleMenu()">☰</button>
+      <span class="live" id="connection">جاري الاتصال</span>
+      <span class="pill">PAPER MODE</span>
+      <button class="refresh" onclick="refreshData()">⟳ تحديث</button>
+    </div>
   </header>
 
-  <p class="subtitle">لوحة مراقبة السوق والمراجحة — الإصدار التجريبي</p>
+  <section class="page-section show" id="overview">
 
-  <div class="grid">
-    <div class="card">
-      <div class="label">حالة النظام</div>
-      <div class="value" id="system">جاري الفحص</div>
+    <div class="grid metrics">
+      <div class="card metric">
+        <div class="metric-head">♥ صحة النظام</div>
+        <div class="metric-value green" id="health">--</div>
+        <div class="metric-note">Cloudflare Worker</div>
+      </div>
+      <div class="card metric">
+        <div class="metric-head">◆ اتصال Binance</div>
+        <div class="metric-value" id="binance">--</div>
+        <div class="metric-note">مصدر بيانات السوق</div>
+      </div>
+      <div class="card metric">
+        <div class="metric-head">▣ حالة المحرك</div>
+        <div class="metric-value gold" id="engine">--</div>
+        <div class="metric-note">Python Engine</div>
+      </div>
+      <div class="card metric">
+        <div class="metric-head">◎ فرص المراجحة</div>
+        <div class="metric-value gold" id="opportunities">--</div>
+        <div class="metric-note">تنتظر بيانات المحرك</div>
+      </div>
+      <div class="card metric">
+        <div class="metric-head">💰 صافي الربح المتوقع</div>
+        <div class="metric-value green" id="profit">--</div>
+        <div class="metric-note">لا توجد بيانات محسوبة</div>
+      </div>
     </div>
-    <div class="card">
-      <div class="label">وضع التداول</div>
-      <div class="value">PAPER ONLY</div>
-    </div>
-    <div class="card">
-      <div class="label">فرص المراجحة</div>
-      <div class="value">بانتظار البيانات</div>
-    </div>
-    <div class="card">
-      <div class="label">الأرباح التجريبية</div>
-      <div class="value">0.00 USDT</div>
-    </div>
-  </div>
 
-  <div class="section card">
-    <h2>مراقبة البيانات</h2>
-    <p class="muted">آخر حدث مستلم من محرك التداول:</p>
-    <pre id="event">لم يتم استلام بيانات حتى الآن.</pre>
-    <button onclick="checkServer()">تحديث الاتصال</button>
-  </div>
+    <div class="grid middle">
+      <div class="card">
+        <div class="section-title">
+          <h3>▥ تحليل السوق — Market Chart</h3>
+          <small>XAUUSD / BTCUSDT</small>
+        </div>
+        <div class="chart-info">
+          <span>1m</span><span>5m</span><span class="gold">15m</span>
+          <span>1h</span><span>4h</span><span>1D</span>
+        </div>
+        <div class="chart-placeholder">
+          <div>
+            <strong>بانتظار بيانات الرسم البياني</strong>
+            <p>سيظهر الرسم عند توصيل مصدر بيانات الأسعار والشموع.</p>
+          </div>
+        </div>
+      </div>
 
-  <div class="section card">
-    <h2>تنبيهات النظام</h2>
-    <p class="muted" id="message">نظام المراقبة جاهز. ننتظر توصيل محرك Python.</p>
-  </div>
+      <div class="card">
+        <div class="section-title">
+          <h3>◈ Market Watchlist</h3>
+          <small>قائمة المراقبة</small>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>الرمز</th><th>السعر</th><th>التغير</th></tr></thead>
+            <tbody id="watchlist">
+              <tr><td colspan="3" class="empty">بانتظار مصدر بيانات السوق</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid middle">
+      <div class="card">
+        <div class="section-title">
+          <h3>⚖ Arbitrage Scanner</h3>
+          <small>محرك اكتشاف المراجحة</small>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>الزوج</th><th>المسار</th><th>الفرق الصافي</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="arbitrage-list">
+              <tr><td colspan="4" class="empty">لا توجد فرص مؤكدة حتى الآن</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">
+          <h3>◔ Trading Performance</h3>
+          <small>أداء التداول</small>
+        </div>
+        <div class="empty">
+          <strong class="gold">لا توجد إحصائيات بعد</strong>
+          <p>سيتم حساب الأداء بعد تسجيل صفقات Paper Trading.</p>
+        </div>
+        <div class="stat-line"><span>Daily P&L</span><b>--</b></div>
+        <div class="stat-line"><span>Win Rate</span><b>--</b></div>
+        <div class="stat-line"><span>Total Trades</span><b>0</b></div>
+      </div>
+    </div>
+
+    <div class="grid lower">
+      <div class="card">
+        <div class="section-title"><h3>▣ Paper Trading</h3><small>التداول الافتراضي</small></div>
+        <div class="stat-line"><span>Virtual Balance</span><b>-- USDT</b></div>
+        <div class="stat-line"><span>Realized P&L</span><b>--</b></div>
+        <div class="stat-line"><span>Open Positions</span><b>0</b></div>
+        <p class="metric-note">لا توجد صفقات افتراضية مسجلة حتى الآن.</p>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>⬡ System Monitor</h3><small>مراقبة النظام</small></div>
+        <div class="stat-line"><span>Worker</span><b class="green" id="worker-state">--</b></div>
+        <div class="stat-line"><span>Python Engine</span><b id="python-state">--</b></div>
+        <div class="stat-line"><span>Last Check</span><b id="last-check">--</b></div>
+        <div class="stat-line"><span>Mode</span><b class="gold">PAPER_ONLY</b></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>ϟ Latest Events</h3><small>آخر الأحداث</small></div>
+        <div id="events">
+          <div class="event"><span class="dot"></span><span>في انتظار أول حدث من محرك Python.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" id="market">
+    <div class="card">
+      <div class="section-title"><h3>Market Intelligence</h3><small>تحليل السوق</small></div>
+      <div class="empty">لم يتم توصيل مصدر بيانات الأسعار بعد.</div>
+    </div>
+  </section>
+
+  <section class="page-section" id="arbitrage">
+    <div class="card">
+      <div class="section-title"><h3>Arbitrage Scanner</h3><small>فرص المراجحة</small></div>
+      <div class="empty">لا توجد فرص حقيقية مستلمة من المحرك حتى الآن.</div>
+    </div>
+  </section>
+
+  <section class="page-section" id="signals">
+    <div class="card"><h3>Trading Signals</h3><div class="empty">بانتظار توصيل محرك الإشارات.</div></div>
+  </section>
+
+  <section class="page-section" id="paper">
+    <div class="card"><h3>Paper Trading</h3><div class="empty">لم يتم تسجيل صفقات افتراضية بعد.</div></div>
+  </section>
+
+  <section class="page-section" id="analytics">
+    <div class="card"><h3>Portfolio Analytics</h3><div class="empty">ستظهر الإحصائيات بعد توفر سجل الصفقات.</div></div>
+  </section>
+
+  <section class="page-section" id="monitor">
+    <div class="card">
+      <h3>System Monitoring</h3>
+      <pre id="raw-data" style="white-space:pre-wrap;color:#9db1c9;direction:ltr;text-align:left">لم يتم استلام بيانات.</pre>
+    </div>
+  </section>
+
+  <section class="page-section" id="settings">
+    <div class="card">
+      <h3>Settings — الإعدادات</h3>
+      <div class="stat-line"><span>Trading Mode</span><b class="green">PAPER_ONLY</b></div>
+      <div class="stat-line"><span>Worker Endpoint</span><b>Cloudflare</b></div>
+      <p class="metric-note">التداول الحقيقي غير متاح في هذه النسخة.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    MR MARKET INTELLIGENCE ENGINE · PAPER MODE · NOT FINANCIAL ADVICE
+  </footer>
+</main>
 </div>
 
 <script>
 const API = "https://clippilot-ai.elsayedelhendawy15.workers.dev";
 
-async function checkServer() {
-  const status = document.getElementById("status");
-  const system = document.getElementById("system");
-  const event = document.getElementById("event");
-  const message = document.getElementById("message");
+function toggleMenu(){
+  document.getElementById("sidebar").classList.toggle("open");
+}
 
-  status.textContent = "جاري الاتصال...";
-  try {
-    const health = await fetch(API + "/health");
-    if (!health.ok) throw new Error("Server error");
+document.querySelectorAll(".nav button").forEach(button=>{
+  button.addEventListener("click",()=>{
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+    button.classList.add("active");
 
-    const data = await fetch(API + "/latest");
-    if (!data.ok) throw new Error("Data error");
+    document.querySelectorAll(".page-section").forEach(s=>s.classList.remove("show"));
+    document.getElementById(button.dataset.page).classList.add("show");
 
-    const result = await data.json();
-    status.textContent = "متصل";
-    system.textContent = "يعمل";
-    event.textContent = JSON.stringify(result, null, 2);
-    message.textContent = result.event
-      ? "تم استلام حدث من المحرك."
-      : "الاتصال ناجح، لكن لم تصل أحداث السوق بعد.";
-  } catch (error) {
-    status.textContent = "غير متصل";
-    system.textContent = "خطأ اتصال";
-    message.textContent = "تعذر الاتصال. تحقق من إعدادات Worker وCORS.";
+    document.getElementById("sidebar").classList.remove("open");
+  });
+});
+
+async function refreshData(){
+  const connection = document.getElementById("connection");
+  connection.textContent = "جاري الاتصال...";
+
+  try{
+    const healthResponse = await fetch(API + "/health",{cache:"no-store"});
+    if(!healthResponse.ok) throw new Error("Health endpoint failed");
+
+    const health = await healthResponse.json();
+
+    const latestResponse = await fetch(API + "/latest",{cache:"no-store"});
+    if(!latestResponse.ok) throw new Error("Latest endpoint failed");
+
+    const latest = await latestResponse.json();
+
+    if(health.mode !== "PAPER_ONLY" || latest.mode !== "PAPER_ONLY"){
+      throw new Error("Unexpected operating mode");
+    }
+
+    connection.textContent = "متصل";
+    connection.style.color = "var(--green)";
+
+    document.getElementById("health").textContent = "متصل";
+    document.getElementById("worker-state").textContent = "Online";
+    document.getElementById("engine").textContent = "بانتظار Python";
+    document.getElementById("python-state").textContent = "غير متصل";
+    document.getElementById("binance").textContent = "غير موصل";
+    document.getElementById("last-check").textContent =
+      new Date().toLocaleTimeString("ar-EG");
+
+    document.getElementById("raw-data").textContent =
+      JSON.stringify({health,latest},null,2);
+
+    const event = latest.event;
+
+    if(event){
+      document.getElementById("events").innerHTML =
+        '<div class="event"><span class="dot"></span><span>تم استلام حدث من المحرك.</span></div>';
+
+      document.getElementById("engine").textContent = "حدث مستلم";
+    }else{
+      document.getElementById("events").innerHTML =
+        '<div class="event"><span class="dot"></span><span>الاتصال ناجح، لكن لا توجد أحداث سوق حتى الآن.</span></div>';
+    }
+
+    document.getElementById("event-placeholder");
+  }catch(error){
+    connection.textContent = "غير متصل";
+    connection.style.color = "var(--red)";
+    document.getElementById("health").textContent = "خطأ";
+    document.getElementById("worker-state").textContent = "Offline";
+    document.getElementById("raw-data").textContent = error.message;
   }
 }
 
-checkServer();
-setInterval(checkServer, 15000);
+refreshData();
+setInterval(refreshData,15000);
 </script>
 </body>
 </html>
