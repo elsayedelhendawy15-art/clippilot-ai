@@ -1,483 +1,202 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#050a13">
-<title>MR Market Intelligence Engine</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MR Market Intelligence</title>
 <style>
-:root {
-  --bg:#050a13;
-  --panel:#0b1422;
-  --panel2:#101d2e;
-  --border:#203149;
-  --gold:#f5bd3f;
-  --green:#16d995;
-  --red:#ff596b;
-  --blue:#24a9ed;
-  --purple:#a77aff;
-  --muted:#91a2b9;
-  --text:#edf4ff;
-}
+:root{--bg:#0b1a1e;--pn:#102329;--pn2:#15303a;--ln:#244650;--tx:#e8eee8;--mu:#8aa5a6;--br:#d9a84e;--up:#6fd6a3;--dn:#ef8a7b;--in:#7cb9d8}
+:root[data-theme=light]{--bg:#e9eff0;--pn:#fbfdfd;--pn2:#e3ebed;--ln:#c4d3d6;--tx:#10272c;--mu:#53706f;--br:#946510;--up:#1c8a5a;--dn:#c0463a;--in:#2a6f94}
 *{box-sizing:border-box}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:Arial,Tahoma,sans-serif;
-}
-button{font:inherit}
-.app{display:flex;min-height:100vh}
-.sidebar{
-  width:235px;flex-shrink:0;background:#080f1c;
-  border-left:1px solid var(--border);
-  padding:20px 13px;display:flex;flex-direction:column;
-}
-.brand{text-align:center;padding:8px 5px 25px}
-.logo{
-  width:62px;height:62px;margin:auto auto 10px;
-  display:grid;place-items:center;border-radius:18px;
-  background:linear-gradient(145deg,#49330b,#111b2b);
-  border:1px solid var(--gold);color:var(--gold);
-  font-size:25px;font-weight:bold;
-}
-.brand h2{font-size:18px;color:var(--gold);margin:5px 0}
-.brand p{font-size:11px;color:var(--muted);margin:5px 0}
-.nav{display:grid;gap:7px}
-.nav button{
-  color:#c4d0e0;background:transparent;border:1px solid transparent;
-  border-radius:10px;padding:13px 10px;text-align:right;
-  cursor:pointer;display:flex;align-items:center;gap:11px;
-}
-.nav button span:first-child{font-size:19px;width:25px;text-align:center}
-.nav button.active{
-  color:var(--gold);border-color:#8d671d;
-  background:linear-gradient(90deg,#392a10,#171a20);
-  box-shadow:0 0 15px #eeb73520;
-}
-.nav button:hover{background:#172337}
-.side-bottom{
-  margin-top:auto;border:1px solid #18533f;background:#0b211c;
-  border-radius:12px;padding:14px;text-align:center;
-}
-.side-bottom strong{display:block;color:var(--green);margin:7px}
-.side-bottom small{color:var(--muted)}
-main{flex:1;min-width:0;padding:23px}
-.topbar{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:15px;flex-wrap:wrap;margin-bottom:22px;
-}
-.heading h1{font-size:23px;margin:0;color:var(--gold)}
-.heading p{font-size:12px;color:var(--muted);margin:8px 0 0}
-.top-actions{display:flex;align-items:center;gap:12px}
-.live{font-size:13px;color:var(--green)}
-.live:before{
-  content:"";display:inline-block;width:9px;height:9px;
-  background:var(--green);border-radius:50%;margin-left:7px;
-  box-shadow:0 0 10px var(--green);
-}
-.pill{
-  padding:8px 12px;border:1px solid var(--border);
-  border-radius:20px;font-size:12px;color:var(--gold);
-}
-.grid{display:grid;gap:13px}
-.metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
-.card{
-  background:linear-gradient(145deg,#101d2d,#091321);
-  border:1px solid var(--border);border-radius:13px;
-  padding:16px;min-width:0;
-}
-.metric{min-height:105px}
-.metric-head{font-size:12px;color:var(--muted)}
-.metric-value{font-size:22px;font-weight:bold;margin-top:17px}
-.metric-note{font-size:11px;color:var(--muted);margin-top:8px}
-.green{color:var(--green)}
-.gold{color:var(--gold)}
-.blue{color:var(--blue)}
-.red{color:var(--red)}
-.purple{color:var(--purple)}
-.middle{
-  grid-template-columns:minmax(0,1.8fr) minmax(260px,1fr);
-  margin-top:14px;
-}
-.section-title{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:10px;margin-bottom:15px;
-}
-.section-title h3{font-size:15px;margin:0}
-.section-title small{font-size:11px;color:var(--muted)}
-.chart-info{
-  display:flex;gap:15px;flex-wrap:wrap;
-  color:var(--muted);font-size:11px;margin:10px 0;
-}
-.chart-placeholder{
-  height:260px;border-radius:9px;border:1px dashed #2a405d;
-  display:flex;align-items:center;justify-content:center;
-  text-align:center;padding:20px;
-  background:repeating-linear-gradient(
-    0deg,transparent,transparent 39px,#24344b55 40px
-  );
-}
-.chart-placeholder strong{display:block;color:var(--gold);margin-bottom:9px}
-.chart-placeholder p{font-size:12px;color:var(--muted);line-height:1.8}
-table{width:100%;border-collapse:collapse;min-width:440px}
-th,td{
-  padding:12px 9px;text-align:right;border-bottom:1px solid #1d2b40;
-  font-size:12px;white-space:nowrap;
-}
-th{color:var(--muted);font-weight:normal;background:#101b2a}
-td{color:#dce6f5}
-.table-wrap{overflow-x:auto}
-.empty{
-  text-align:center;color:var(--muted);padding:25px 10px;
-  font-size:12px;line-height:1.9;
-}
-.lower{
-  grid-template-columns:1.2fr 1fr 1fr;margin-top:14px;
-}
-.stat-line{
-  display:flex;justify-content:space-between;gap:10px;
-  padding:12px 0;border-bottom:1px solid #1d2b40;
-  font-size:12px;
-}
-.stat-line span:first-child{color:var(--muted)}
-.event{
-  display:flex;gap:9px;align-items:flex-start;
-  padding:10px 0;border-bottom:1px solid #1d2b40;
-  font-size:12px;color:var(--muted);
-}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:4px}
-.footer{
-  color:#65768c;text-align:center;font-size:10px;
-  margin:22px 0 5px;
-}
-.refresh{
-  border:1px solid #73551d;background:#211b10;
-  color:var(--gold);border-radius:8px;padding:8px 12px;
-  cursor:pointer;font-size:12px;
-}
-.refresh:active{transform:scale(.97)}
-.page-section{display:none}
-.page-section.show{display:block}
-.mobile-menu{display:none}
-@media(max-width:1100px){
-  .metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .lower{grid-template-columns:1fr 1fr}
-}
-@media(max-width:750px){
-  .sidebar{
-    position:fixed;z-index:10;right:-245px;top:0;bottom:0;
-    transition:right .25s;width:230px;
-  }
-  .sidebar.open{right:0}
-  main{padding:15px;width:100%}
-  .mobile-menu{display:block}
-  .heading h1{font-size:18px}
-  .middle,.lower{grid-template-columns:1fr}
-  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .metric{min-height:95px;padding:13px}
-  .metric-value{font-size:19px}
-  .chart-placeholder{height:210px}
-}
-@media(max-width:380px){
-  .metrics{grid-template-columns:1fr 1fr}
-  .topbar{align-items:flex-start}
-}
+html{color-scheme:dark}:root[data-theme=light]{color-scheme:light}
+body{margin:0;color:var(--tx);font:15px/1.55 "Noto Sans Arabic","Segoe UI",system-ui,Tahoma,sans-serif;background:radial-gradient(900px 420px at 88% -12%,color-mix(in srgb,var(--br) 15%,transparent),transparent),var(--bg);min-height:100vh}
+.n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}[dir=rtl] td.n{text-align:right}
+.up{color:var(--up)}.dn{color:var(--dn)}.am{color:var(--br)}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--ln)}
+header{display:flex;align-items:center;gap:12px;padding:14px max(16px,env(safe-area-inset-right)) 8px max(16px,env(safe-area-inset-left));max-width:1180px;margin:auto}
+.lg{width:40px;height:40px;flex:none}
+header h2{margin:0;font-size:17px;line-height:1.2}header small{color:var(--mu);display:block;font-size:12.5px}
+.sp{flex:1}
+.b{background:transparent;border:1px solid var(--ln);color:var(--tx);border-radius:10px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.b:hover{background:var(--pn2)}
+:focus-visible{outline:2px solid var(--br);outline-offset:2px}
+main{max-width:1180px;margin:auto;padding:6px 16px 28px;display:grid;gap:14px}
+.hero{padding:22px 22px 18px;border-radius:14px;box-shadow:inset 0 2px 0 var(--br);background:linear-gradient(160deg,var(--pn2),var(--pn));border:1px solid var(--ln)}
+.hero h1{margin:0 0 4px;font-size:clamp(21px,4.6vw,32px);line-height:1.25;letter-spacing:-.01em}
+#ans{margin:0;color:var(--mu);max-width:62ch;min-height:3em}
+.g{position:relative;height:16px;border-radius:99px;margin:46px 8px 30px;direction:ltr;background:linear-gradient(90deg,color-mix(in srgb,var(--dn) 28%,transparent) 0 var(--a,50%),color-mix(in srgb,var(--br) 30%,transparent) var(--a,50%) var(--b,70%),color-mix(in srgb,var(--up) 30%,transparent) var(--b,70%) 100%)}
+.mk{position:absolute;top:-9px;width:4px;height:34px;margin-left:-2px;background:var(--tx);border-radius:2px;transition:left .7s cubic-bezier(.2,.8,.2,1);opacity:.25}
+.mv{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:1px 8px;border-radius:8px;font-size:13px;font-weight:700;white-space:nowrap}
+.tk{position:absolute;top:24px;transform:translateX(-50%);font-size:12px;color:var(--mu)}
+.tk::before{content:"";position:absolute;left:50%;top:-8px;height:6px;border-left:1px solid var(--mu)}
+.lgd{margin:0 0 10px;color:var(--mu);font-size:12.5px}
+#spk{width:100%;height:50px;display:block;direction:ltr}
+#spk .z{stroke:var(--mu);stroke-width:1;opacity:.6;vector-effect:non-scaling-stroke}#spk .d{stroke-dasharray:4 4;stroke:var(--br)}
+#spk .pl{fill:none;stroke:var(--in);stroke-width:2;vector-effect:non-scaling-stroke}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--ln);border-radius:10px;background:var(--pn)}
+.k{padding:12px 16px;display:flex;flex-direction:column;border-inline-start:1px solid var(--ln)}.k:first-child{border:0}
+.k span{color:var(--mu);font-size:12.5px}.k b{font-size:19px}.k small{color:var(--mu);font-size:12px;min-height:1.3em}
+.cols{display:grid;gap:14px;grid-template-columns:1.55fr 1fr}
+section.p{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:16px;min-width:0}
+section.p h3{margin:0 0 10px;font-size:16px}
+.tb{max-width:1180px;margin:auto;display:flex;align-items:center;gap:18px;padding:7px 16px 9px;overflow-x:auto;scrollbar-width:none;white-space:nowrap}
+.leds{display:flex;gap:12px;flex:none;font-size:12.5px;color:var(--mu)}
+.led::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:6px;background:var(--mu)}
+.led.up::before{background:var(--up);box-shadow:0 0 8px var(--up)}.led.dn::before{background:var(--dn);box-shadow:0 0 8px var(--dn)}
+.tkr{display:flex;gap:20px;font-size:13px}.ti{display:flex;gap:7px;align-items:baseline}.ti b{font-weight:600}.ti span:last-child{font-size:12px}
+.sc{overflow-x:auto}
+.sl{stroke-linejoin:round}.sl.up{stroke:var(--up)}.sl.dn{stroke:var(--dn)}
+@keyframes fx{from{background:color-mix(in srgb,var(--c) 26%,transparent)}}
+td.up,td.dn{animation:fx .9s ease-out}td.up{--c:var(--up)}td.dn{--c:var(--dn)}
+table{width:100%;border-collapse:collapse;min-width:440px}table.t2{min-width:0}table.t2 td{white-space:normal}
+th{color:var(--mu);font-size:12.5px;font-weight:600;text-align:start;padding:4px 8px}
+td{padding:9px 8px;border-top:1px solid var(--ln);text-align:start;white-space:nowrap}
+tr.dim td{opacity:.45}
+.tr{position:relative;width:70px;height:8px;border-radius:4px;background:var(--pn2);direction:ltr}
+.tr i{position:absolute;top:0;bottom:0;border-radius:4px}.tr i.up{background:var(--up)}.tr i.dn{background:var(--dn)}
+.tr::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;border-left:1px solid var(--mu)}
+.fl{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px}
+.fl label{display:flex;flex-direction:column;font-size:12.5px;color:var(--mu);gap:3px}
+.fl input{background:var(--bg);color:var(--tx);border:1px solid var(--ln);border-radius:8px;padding:7px 9px;font:inherit;width:100%}
+.cr{display:grid;grid-template-columns:1fr auto;gap:0 10px;padding:11px 0;border-top:1px solid var(--ln)}
+.cr b{grid-row:span 2;align-self:center;font-size:22px}.cr small{color:var(--mu)}
+.nt{color:var(--mu);font-size:12.5px;margin:8px 0 0}
+#st{color:var(--mu);font-size:13px;margin:0 0 8px}
+.em{color:var(--mu);padding:14px 0}
+ul{list-style:none;margin:0;padding:0}li{padding:8px 0;border-top:1px solid var(--ln);font-size:13.5px;word-break:break-word}li time{color:var(--mu);margin-inline-end:8px}li em{color:var(--br);font-style:normal;margin-inline-end:6px}
+footer{max-width:1180px;margin:auto;padding:0 16px 28px;color:var(--mu);font-size:12.5px}
+@media(max-width:600px){td,th{padding-inline:5px}table{font-size:13px}}
+@media(max-width:900px){.cols{grid-template-columns:1fr}.kp{grid-template-columns:1fr 1fr}.k:nth-child(3){border-inline-start:0}.k:nth-child(n+3){border-top:1px solid var(--ln)}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
-
 <body>
-<div class="app">
-
-<aside class="sidebar" id="sidebar">
-  <div class="brand">
-    <div class="logo">MR</div>
-    <h2>MR INTELLIGENCE</h2>
-    <p>AI POWERED MARKET ANALYSIS</p>
-  </div>
-
-  <nav class="nav">
-    <button class="active" data-page="overview"><span>⌂</span> الرئيسية</button>
-    <button data-page="market"><span>▥</span> تحليل السوق</button>
-    <button data-page="arbitrage"><span>⚖</span> فرص المراجحة</button>
-    <button data-page="signals"><span>ϟ</span> إشارات التداول</button>
-    <button data-page="paper"><span>▣</span> التداول التجريبي</button>
-    <button data-page="analytics"><span>◔</span> تحليل الأداء</button>
-    <button data-page="monitor"><span>⚙</span> مراقبة النظام</button>
-    <button data-page="settings"><span>☷</span> الإعدادات</button>
-  </nav>
-
-  <div class="side-bottom">
-    <div>🛡️ PAPER TRADING</div>
-    <strong>ACTIVE</strong>
-    <small>وضع تجريبي فقط</small>
-  </div>
-</aside>
-
-<main>
-  <header class="topbar">
-    <div class="heading">
-      <h1>MR Market Intelligence Engine</h1>
-      <p>Real-Time Analysis · Arbitrage · Quantitative Intelligence</p>
-    </div>
-    <div class="top-actions">
-      <button class="refresh mobile-menu" onclick="toggleMenu()">☰</button>
-      <span class="live" id="connection">جاري الاتصال</span>
-      <span class="pill">PAPER MODE</span>
-      <button class="refresh" onclick="refreshData()">⟳ تحديث</button>
-    </div>
-  </header>
-
-  <section class="page-section show" id="overview">
-
-    <div class="grid metrics">
-      <div class="card metric">
-        <div class="metric-head">♥ صحة النظام</div>
-        <div class="metric-value green" id="health">--</div>
-        <div class="metric-note">Cloudflare Worker</div>
-      </div>
-      <div class="card metric">
-        <div class="metric-head">◆ اتصال Binance</div>
-        <div class="metric-value" id="binance">--</div>
-        <div class="metric-note">مصدر بيانات السوق</div>
-      </div>
-      <div class="card metric">
-        <div class="metric-head">▣ حالة المحرك</div>
-        <div class="metric-value gold" id="engine">--</div>
-        <div class="metric-note">Python Engine</div>
-      </div>
-      <div class="card metric">
-        <div class="metric-head">◎ فرص المراجحة</div>
-        <div class="metric-value gold" id="opportunities">--</div>
-        <div class="metric-note">تنتظر بيانات المحرك</div>
-      </div>
-      <div class="card metric">
-        <div class="metric-head">💰 صافي الربح المتوقع</div>
-        <div class="metric-value green" id="profit">--</div>
-        <div class="metric-note">لا توجد بيانات محسوبة</div>
-      </div>
-    </div>
-
-    <div class="grid middle">
-      <div class="card">
-        <div class="section-title">
-          <h3>▥ تحليل السوق — Market Chart</h3>
-          <small>XAUUSD / BTCUSDT</small>
-        </div>
-        <div class="chart-info">
-          <span>1m</span><span>5m</span><span class="gold">15m</span>
-          <span>1h</span><span>4h</span><span>1D</span>
-        </div>
-        <div class="chart-placeholder">
-          <div>
-            <strong>بانتظار بيانات الرسم البياني</strong>
-            <p>سيظهر الرسم عند توصيل مصدر بيانات الأسعار والشموع.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">
-          <h3>◈ Market Watchlist</h3>
-          <small>قائمة المراقبة</small>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>الرمز</th><th>السعر</th><th>التغير</th></tr></thead>
-            <tbody id="watchlist">
-              <tr><td colspan="3" class="empty">بانتظار مصدر بيانات السوق</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid middle">
-      <div class="card">
-        <div class="section-title">
-          <h3>⚖ Arbitrage Scanner</h3>
-          <small>محرك اكتشاف المراجحة</small>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>الزوج</th><th>المسار</th><th>الفرق الصافي</th>
-                <th>الحالة</th>
-              </tr>
-            </thead>
-            <tbody id="arbitrage-list">
-              <tr><td colspan="4" class="empty">لا توجد فرص مؤكدة حتى الآن</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">
-          <h3>◔ Trading Performance</h3>
-          <small>أداء التداول</small>
-        </div>
-        <div class="empty">
-          <strong class="gold">لا توجد إحصائيات بعد</strong>
-          <p>سيتم حساب الأداء بعد تسجيل صفقات Paper Trading.</p>
-        </div>
-        <div class="stat-line"><span>Daily P&L</span><b>--</b></div>
-        <div class="stat-line"><span>Win Rate</span><b>--</b></div>
-        <div class="stat-line"><span>Total Trades</span><b>0</b></div>
-      </div>
-    </div>
-
-    <div class="grid lower">
-      <div class="card">
-        <div class="section-title"><h3>▣ Paper Trading</h3><small>التداول الافتراضي</small></div>
-        <div class="stat-line"><span>Virtual Balance</span><b>-- USDT</b></div>
-        <div class="stat-line"><span>Realized P&L</span><b>--</b></div>
-        <div class="stat-line"><span>Open Positions</span><b>0</b></div>
-        <p class="metric-note">لا توجد صفقات افتراضية مسجلة حتى الآن.</p>
-      </div>
-
-      <div class="card">
-        <div class="section-title"><h3>⬡ System Monitor</h3><small>مراقبة النظام</small></div>
-        <div class="stat-line"><span>Worker</span><b class="green" id="worker-state">--</b></div>
-        <div class="stat-line"><span>Python Engine</span><b id="python-state">--</b></div>
-        <div class="stat-line"><span>Last Check</span><b id="last-check">--</b></div>
-        <div class="stat-line"><span>Mode</span><b class="gold">PAPER_ONLY</b></div>
-      </div>
-
-      <div class="card">
-        <div class="section-title"><h3>ϟ Latest Events</h3><small>آخر الأحداث</small></div>
-        <div id="events">
-          <div class="event"><span class="dot"></span><span>في انتظار أول حدث من محرك Python.</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="page-section" id="market">
-    <div class="card">
-      <div class="section-title"><h3>Market Intelligence</h3><small>تحليل السوق</small></div>
-      <div class="empty">لم يتم توصيل مصدر بيانات الأسعار بعد.</div>
-    </div>
-  </section>
-
-  <section class="page-section" id="arbitrage">
-    <div class="card">
-      <div class="section-title"><h3>Arbitrage Scanner</h3><small>فرص المراجحة</small></div>
-      <div class="empty">لا توجد فرص حقيقية مستلمة من المحرك حتى الآن.</div>
-    </div>
-  </section>
-
-  <section class="page-section" id="signals">
-    <div class="card"><h3>Trading Signals</h3><div class="empty">بانتظار توصيل محرك الإشارات.</div></div>
-  </section>
-
-  <section class="page-section" id="paper">
-    <div class="card"><h3>Paper Trading</h3><div class="empty">لم يتم تسجيل صفقات افتراضية بعد.</div></div>
-  </section>
-
-  <section class="page-section" id="analytics">
-    <div class="card"><h3>Portfolio Analytics</h3><div class="empty">ستظهر الإحصائيات بعد توفر سجل الصفقات.</div></div>
-  </section>
-
-  <section class="page-section" id="monitor">
-    <div class="card">
-      <h3>System Monitoring</h3>
-      <pre id="raw-data" style="white-space:pre-wrap;color:#9db1c9;direction:ltr;text-align:left">لم يتم استلام بيانات.</pre>
-    </div>
-  </section>
-
-  <section class="page-section" id="settings">
-    <div class="card">
-      <h3>Settings — الإعدادات</h3>
-      <div class="stat-line"><span>Trading Mode</span><b class="green">PAPER_ONLY</b></div>
-      <div class="stat-line"><span>Worker Endpoint</span><b>Cloudflare</b></div>
-      <p class="metric-note">التداول الحقيقي غير متاح في هذه النسخة.</p>
-    </div>
-  </section>
-
-  <footer class="footer">
-    MR MARKET INTELLIGENCE ENGINE · PAPER MODE · NOT FINANCIAL ADVICE
-  </footer>
-</main>
+<div class="top">
+<header>
+<svg class="lg" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 36 11v18L20 38 4 29V11z" fill="none" stroke="#d9a84e" stroke-width="2"/><path d="M11 27V14l5 7 4-7v13M24 27V14h5a4 4 0 0 1 0 8h-5m5 0 3 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div><h2 data-i="t"></h2><small data-i="sub"></small></div>
+<span class="sp"></span>
+<button class="b" id="bl" type="button"></button>
+<button class="b" id="bt" type="button" data-i="theme"></button>
+</header>
+<div class="tb"><div class="leds"><span class="led wt" id="lw">Worker</span><span class="led wt" id="lm">Binance</span><span class="led up">PAPER_ONLY</span></div><div class="tkr n" id="tkr"></div></div>
 </div>
-
+<main>
+<section class="hero" aria-live="polite">
+<h1 data-i="q"></h1>
+<p id="ans"></p>
+<div class="g" id="g"><div class="mk" id="mk"><span class="mv n" id="mv"></span></div>
+<span class="tk n" id="tl"></span><span class="tk n" id="t0"></span><span class="tk n" id="t1"></span><span class="tk n" id="th"></span></div>
+<p class="lgd" id="lgd"></p>
+<svg id="spk" viewBox="0 0 300 50" preserveAspectRatio="none" aria-hidden="true"></svg>
+</section>
+<div class="kp">
+<div class="k"><span data-i="kw"></span><b id="kwv"></b><small id="kws"></small></div>
+<div class="k"><span data-i="km"></span><b id="kmv"></b><small id="kms"></small></div>
+<div class="k"><span data-i="ko"></span><b id="kov" class="n"></b><small id="kos" class="n"></small></div>
+<div class="k"><span data-i="kl"></span><b id="klv"></b><small id="kls"></small></div>
+</div>
+<div class="cols">
+<section class="p"><h3 data-i="mt"></h3><div class="sc"><table><thead><tr><th data-i="sym"></th><th>Bid</th><th>Ask</th><th data-i="sp"></th><th data-i="ib"></th><th data-i="tr"></th><th data-i="mo"></th></tr></thead><tbody id="mb"></tbody></table></div></section>
+<section class="p"><h3 data-i="st"></h3>
+<div class="fl"><label><span data-i="am"></span><input id="i-amt" type="number" inputmode="decimal" min="1"></label><label><span data-i="fe"></span><input id="i-fee" type="number" inputmode="decimal" min="0" step="0.01"></label><label><span data-i="sl"></span><input id="i-slip" type="number" inputmode="decimal" min="0"></label><label><span data-i="th"></span><input id="i-thr" type="number" inputmode="decimal" min="0"></label></div>
+<div id="sc"></div><p class="nt" data-i="sn"></p></section>
+</div>
+<div class="cols">
+<section class="p"><h3 data-i="lt"></h3><p id="st"></p><div class="sc"><table class="t2"><thead><tr><th data-i="tm"></th><th data-i="cy"></th><th data-i="bp"></th><th data-i="pf"></th></tr></thead><tbody id="lb"></tbody></table></div><div id="le" class="em" data-i="le"></div><p class="nt"><span data-i="ln"></span> <button class="b" id="cl" type="button" data-i="clr"></button></p></section>
+<section class="p"><h3 data-i="at"></h3><ul id="al"></ul><div id="ae" class="em" data-i="ae"></div></section>
+</div>
+</main>
+<footer data-i="ft"></footer>
 <script>
-const API = "https://clippilot-ai.elsayedelhendawy15.workers.dev";
-
-function toggleMenu(){
-  document.getElementById("sidebar").classList.toggle("open");
-}
-
-document.querySelectorAll(".nav button").forEach(button=>{
-  button.addEventListener("click",()=>{
-    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-    button.classList.add("active");
-
-    document.querySelectorAll(".page-section").forEach(s=>s.classList.remove("show"));
-    document.getElementById(button.dataset.page).classList.add("show");
-
-    document.getElementById("sidebar").classList.remove("open");
-  });
-});
-
-async function refreshData(){
-  const connection = document.getElementById("connection");
-  connection.textContent = "جاري الاتصال...";
-
-  try{
-    const healthResponse = await fetch(API + "/health",{cache:"no-store"});
-    if(!healthResponse.ok) throw new Error("Health endpoint failed");
-
-    const health = await healthResponse.json();
-
-    const latestResponse = await fetch(API + "/latest",{cache:"no-store"});
-    if(!latestResponse.ok) throw new Error("Latest endpoint failed");
-
-    const latest = await latestResponse.json();
-
-    if(health.mode !== "PAPER_ONLY" || latest.mode !== "PAPER_ONLY"){
-      throw new Error("Unexpected operating mode");
-    }
-
-    connection.textContent = "متصل";
-    connection.style.color = "var(--green)";
-
-    document.getElementById("health").textContent = "متصل";
-    document.getElementById("worker-state").textContent = "Online";
-    document.getElementById("engine").textContent = "بانتظار Python";
-    document.getElementById("python-state").textContent = "غير متصل";
-    document.getElementById("binance").textContent = "غير موصل";
-    document.getElementById("last-check").textContent =
-      new Date().toLocaleTimeString("ar-EG");
-
-    document.getElementById("raw-data").textContent =
-      JSON.stringify({health,latest},null,2);
-
-    const event = latest.event;
-
-    if(event){
-      document.getElementById("events").innerHTML =
-        '<div class="event"><span class="dot"></span><span>تم استلام حدث من المحرك.</span></div>';
-
-      document.getElementById("engine").textContent = "حدث مستلم";
-    }else{
-      document.getElementById("events").innerHTML =
-        '<div class="event"><span class="dot"></span><span>الاتصال ناجح، لكن لا توجد أحداث سوق حتى الآن.</span></div>';
-    }
-
-    document.getElementById("event-placeholder");
-  }catch(error){
-    connection.textContent = "غير متصل";
-    connection.style.color = "var(--red)";
-    document.getElementById("health").textContent = "خطأ";
-    document.getElementById("worker-state").textContent = "Offline";
-    document.getElementById("raw-data").textContent = error.message;
-  }
-}
-
-refreshData();
-setInterval(refreshData,15000);
+(()=>{"use strict";
+const $=s=>document.querySelector(s),W="https://clippilot-ai.elsayedelhendawy15.workers.dev",M="https://data-api.binance.vision",SY=["BTCUSDT","ETHUSDT","ETHBTC","BNBUSDT","SOLUSDT"],STALE=8000;
+const get=k=>{try{return localStorage.getItem(k)}catch{return null}},set=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
+const L={ar:{t:"MR لذكاء الأسواق",sub:"مراقبة المراجحة المثلثية (تجريبي فقط)",theme:"المظهر",lang:"English",q:"هل توجد فرصة صافية الآن؟",wait:"بانتظار أسعار السوق…",no:"لا. أفضل مثلث عند {n} نقطة أساس بعد التكاليف. فرق السعر الخام {g} نقطة مقابل تكلفة {h} نقطة.",yes:"نعم بتقدير المتصفح: {n} نقطة أساس بعد التكاليف، فوق حد التنبيه. السجل الرسمي يأتي من المحرك.",cap:"يوجد فرق سعر، لكن حجم أفضل سعر في الدفتر لا يكفي لتنفيذ {a}.",leg:"المقياس بنقاط الأساس بعد الرسوم والانزلاق. 0 تعادل، {t} حد التنبيه.",kw:"اتصال الـ Worker",km:"بيانات السوق",ko:"فرص مسجلة",kl:"آخر فرصة",ok:"متصل",dn:"منقطع",chk:"جاري الفحص",none:"لا توجد بعد",ago:"منذ {x}",fresh:"مباشرة",stale:"متأخرة",mt:"الأسعار والإشارات",sym:"الزوج",sp:"الفارق (نقطة)",ib:"ميل الدفتر",mo:"حركة دقيقة",tr:"الاتجاه",st:"ماسح المثلثات",sn:"تقدير المتصفح على أفضل سعر فقط وبنفس معادلة المحرك. المرجع الرسمي هو المحرك.",am:"المبلغ",fe:"الرسوم %",sl:"الانزلاق (نقطة)",th:"حد التنبيه (نقطة)",nodata:"بلا بيانات",nosz:"الحجم لا يكفي",net:"صافي بعد التكاليف",lt:"سجل التداول الافتراضي",le:"لا توجد فرص مسجلة. هذا متوقع: المثلثات الكبيرة نادرًا ما تغطي الرسوم.",tm:"الوقت",cy:"الدورة",bp:"صافي (نقطة)",pf:"الربح",ln:"محفوظ في هذا المتصفح فقط. السجل الدائم يأتي مع قاعدة البيانات.",clr:"مسح السجل",sure:"مسح السجل المحلي؟",cnt:"{n} فرصة، ربح افتراضي {p}، متوسط {a} نقطة، أفضل {b}",at:"التنبيهات والأخطاء",ae:"لا توجد أخطاء.",eh:"قد يكون حجب منطقة أو منع من المتصفح",ft:"وضع PAPER_ONLY: لا يتم إرسال أي أوامر حقيقية. الأسعار من بيانات Binance العامة. هذه أداة بحث وليست نصيحة استثمارية.",u:["ث","د","س"]},
+en:{t:"MR Market Intelligence",sub:"Triangular arbitrage monitor (paper only)",theme:"Theme",lang:"العربية",q:"Is there a net edge right now?",wait:"Waiting for market prices…",no:"No. The best triangle sits at {n} bps after costs. Raw price gap is {g} bps against {h} bps of costs.",yes:"Yes, by the browser estimate: {n} bps after costs, above your alert threshold. The engine remains the official record.",cap:"There is a price gap, but top-of-book size cannot absorb {a}.",leg:"Scale is bps after fees and slippage. 0 is break-even, {t} is your alert threshold.",kw:"Worker connection",km:"Market data",ko:"Logged opportunities",kl:"Last opportunity",ok:"Connected",dn:"Down",chk:"Checking",none:"None yet",ago:"{x} ago",fresh:"Live",stale:"Delayed",mt:"Prices and signals",sym:"Pair",sp:"Spread (bps)",ib:"Book tilt",mo:"1-min move",tr:"Trend",st:"Triangle scanner",sn:"Browser estimate using top-of-book only, same formula as the engine. The engine is the official source.",am:"Amount",fe:"Fee %",sl:"Slippage (bps)",th:"Alert threshold (bps)",nodata:"No data",nosz:"Size too small",net:"Net after costs",lt:"Paper trading log",le:"No opportunities logged. That is expected: large triangles rarely cover fees.",tm:"Time",cy:"Cycle",bp:"Net (bps)",pf:"Profit",ln:"Stored in this browser only. A permanent log arrives with the database.",clr:"Clear log",sure:"Clear the local log?",cnt:"{n} opportunities, virtual profit {p}, average {a} bps, best {b}",at:"Alerts and errors",ae:"No errors.",eh:"possibly a region block or browser restriction",ft:"PAPER_ONLY mode: no real orders are ever sent. Prices come from public Binance data. A research tool, not investment advice.",u:["s","m","h"]}};
+let lang=get("mr_lang")==="en"?"en":"ar",cfg={amt:100,fee:.1,slip:2,thr:8};
+try{Object.assign(cfg,JSON.parse(get("mr_cfg")||"{}"))}catch{}
+const Q={},H={},net=[],P=[{o:[["BTCUSDT","B"],["ETHBTC","B"],["ETHUSDT","S"]],n:"USDT → BTC → ETH → USDT"},{o:[["ETHUSDT","B"],["ETHBTC","S"],["BTCUSDT","S"]],n:"USDT → ETH → BTC → USDT"}];
+let log=[],errs=[],wOk=null,mOk=0,lat=0;const seen={};
+const okEv=e=>e&&typeof e==="object"&&e.mode==="PAPER_ONLY"&&e.type==="paper_opportunity"&&Number.isFinite(e.timestamp_ms)&&Array.isArray(e.cycle)&&e.cycle.length<6&&e.cycle.every(x=>typeof x==="string"&&x.length<13)&&Number.isFinite(e.profit)&&Number.isFinite(e.profit_bps)&&typeof e.start_asset==="string";
+const slim=e=>({timestamp_ms:e.timestamp_ms,cycle:e.cycle.slice(),profit:e.profit,profit_bps:e.profit_bps,start_asset:e.start_asset.slice(0,12),mode:"PAPER_ONLY",type:"paper_opportunity"});
+try{log=JSON.parse(get("mr_log")||"[]").filter(okEv).map(slim)}catch{}
+const t=(k,v)=>String(L[lang][k]).replace(/\{(\w+)\}/g,(m,x)=>v&&x in v?v[x]:m);
+const h=(tag,c,x)=>{const e=document.createElement(tag);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const nf=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}),px=x=>nf(x,x>=100?2:x>=1?4:6),sg=x=>(x>0?"+":"")+x.toFixed(2),f1=x=>(Math.abs(x)<.05?0:x).toFixed(1);
+const tm=x=>new Date(x).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}),num=(v,d,lo,hi)=>{v=parseFloat(v);return Number.isFinite(v)?Math.min(hi,Math.max(lo,v)):d};
+const ago=ms=>{const s=Math.max(0,Math.round(ms/1e3)),u=L[lang].u;return s<60?s+" "+u[0]:s<3600?Math.floor(s/60)+" "+u[1]:Math.floor(s/3600)+" "+u[2]};
+const NS="http://www.w3.org/2000/svg",sv=(a,up)=>{const e=document.createElementNS(NS,"svg");e.setAttribute("viewBox","0 0 70 22");e.setAttribute("width",70);e.setAttribute("height",22);if(a.length<3)return e;const mn=Math.min(...a),mx=Math.max(...a),y=v=>(20-(v-mn)/((mx-mn)||1)*18).toFixed(1),l=document.createElementNS(NS,"polyline");
+l.setAttribute("points",a.map((v,i)=>(i/(a.length-1)*70).toFixed(1)+","+y(v)).join(" "));l.setAttribute("fill","none");l.setAttribute("stroke-width","1.6");l.setAttribute("class","sl "+(up?"up":"dn"));e.append(l);return e};
+const hurdle=()=>(1-Math.pow((1-cfg.slip/1e4)*(1-cfg.fee/100),3))*1e4;
+function err(src,msg){const k=src+msg,n=Date.now();if(seen[k]&&n-seen[k]<6e4)return;seen[k]=n;errs.unshift({t:n,src,msg:String(msg).slice(0,140)});errs=errs.slice(0,30);alerts()}
+function calc(p){let a=cfg.amt,sl=1-cfg.slip/1e4,f=1-cfg.fee/100,cap=true;
+for(const[s,d]of p.o){const q=Q[s];if(!q||Date.now()-q.t>STALE)return null;
+if(d==="S"){if(a>q.bq)cap=false;a*=q.bid}else{if(a/q.ask>q.aq)cap=false;a/=q.ask}a*=sl*f}
+return{bps:(a-cfg.amt)/cfg.amt*1e4,cap}}
+function best(){let b=null;for(const p of P){const c=calc(p);if(c&&(!b||c.bps>b.bps))b=c}return b}
+function hero(){const b=best(),hd=hurdle(),a=$("#ans"),mk=$("#mk"),g=$("#g");
+const lo=-Math.max(60,hd*1.7),hi=Math.max(cfg.thr*2,20),p=x=>Math.min(100,Math.max(0,(x-lo)/(hi-lo)*100));
+g.style.setProperty("--a",p(0)+"%");g.style.setProperty("--b",p(cfg.thr)+"%");
+for(const[id,x]of[["tl",lo],["t0",0],["t1",cfg.thr],["th",hi]]){const e=$("#"+id);e.style.left=p(x)+"%";e.textContent=Math.round(x)}
+$("#lgd").textContent=t("leg",{t:cfg.thr});
+if(!b){a.textContent=t("wait");mk.style.opacity=.25;return}
+mk.style.opacity=1;mk.style.left=p(b.bps)+"%";$("#mv").textContent=sg(b.bps);
+a.textContent=b.bps>=cfg.thr?t(b.cap?"yes":"cap",{n:f1(b.bps),a:cfg.amt}):t("no",{n:f1(b.bps),g:f1(b.bps+hd),h:f1(hd)});spark()}
+function spark(){const s=$("#spk");if(net.length<2){s.replaceChildren();return}
+const v=[...net,0,cfg.thr],mn=Math.min(...v),mx=Math.max(...v),y=x=>(46-(x-mn)/((mx-mn)||1)*42).toFixed(1);
+s.innerHTML='<line x1="0" x2="300" y1="'+y(0)+'" y2="'+y(0)+'" class="z"/><line x1="0" x2="300" y1="'+y(cfg.thr)+'" y2="'+y(cfg.thr)+'" class="z d"/><polyline class="pl" points="'+net.map((x,i)=>(i/(net.length-1)*300).toFixed(1)+","+y(x)).join(" ")+'"/>'}
+function market(){const b=$("#mb"),k=$("#tkr");b.replaceChildren();k.replaceChildren();const now=Date.now();
+for(const s of SY){const q=Q[s];if(!q)continue;const r=h("tr",now-q.t>STALE?"dim":""),mid=(q.bid+q.ask)/2,ib=(q.bq-q.aq)/(q.bq+q.aq),hs=H[s]||[],mo=hs.length>9?(mid-hs[0])/hs[0]*1e4:null,tr=h("div","tr"),f=h("i",ib>=0?"up":"dn");
+f.style.cssText=ib>=0?"left:50%;width:"+ib*50+"%":"right:50%;width:"+(-ib*50)+"%";tr.title=sg(ib*100)+"%";tr.append(f);
+const c=(x,cl)=>{const d=h("td",cl,x);return d},cd=q.dir>0?"n up":q.dir<0?"n dn":"n",ti=h("td"),mt=h("td","n"+(mo==null?"":mo>0?" up":mo<0?" dn":""),mo==null?"—":(mo>0?"▲ ":mo<0?"▼ ":"")+Math.abs(mo).toFixed(1));
+ti.append(tr);const sp=h("td");sp.append(sv(hs,hs.length>2&&hs[hs.length-1]>=hs[0]));
+r.append(c(s.replace(/(USDT|BTC)$/," / $1"),"n"),c(px(q.bid),cd),c(px(q.ask),"n"),c(f1((q.ask-q.bid)/mid*1e4),"n"),ti,sp,mt);b.append(r);
+const d=h("span","ti");d.append(h("b",null,s.replace(/(USDT|BTC)$/,"/$1")),h("span","n",px(mid)),h("span","n "+(mo>0?"up":mo<0?"dn":""),mo==null?"":(mo>0?"▲":"▼")+Math.abs(mo).toFixed(1)));k.append(d)}}
+function scan(){const b=$("#sc");b.replaceChildren();
+for(const p of P){const c=calc(p),r=h("div","cr"),nm=h("span","n",p.n);nm.dir="ltr";
+r.append(nm,h("b","n "+(!c?"":c.bps>=cfg.thr&&c.cap?"up":c.bps>0?"am":"dn"),c?sg(c.bps):"—"),h("small",null,!c?t("nodata"):!c.cap?t("nosz"):t("net")));b.append(r)}}
+function paper(){const b=$("#lb");b.replaceChildren();const L2=log.slice().sort((x,y)=>y.timestamp_ms-x.timestamp_ms);
+$("#le").hidden=L2.length>0;$("#st").hidden=!L2.length;
+if(L2.length){const tp=L2.reduce((s,e)=>s+e.profit,0),ab=L2.reduce((s,e)=>s+e.profit_bps,0)/L2.length,bb=Math.max(...L2.map(e=>e.profit_bps));
+$("#st").textContent=t("cnt",{n:L2.length,p:sg(tp)+" "+L2[0].start_asset,a:f1(ab),b:f1(bb)})}
+for(const e of L2.slice(0,12)){const r=h("tr"),cy=h("td","n",e.cycle.slice(0,-1).join("→"));cy.dir="ltr";
+r.append(h("td","n",tm(e.timestamp_ms)),cy,h("td","n up",sg(e.profit_bps)),h("td","n up",sg(e.profit)+" "+e.start_asset));b.append(r)}}
+function alerts(){const u=$("#al");u.replaceChildren();$("#ae").hidden=errs.length>0;
+for(const e of errs.slice(0,12)){const li=h("li");li.append(h("time","n",tm(e.t)),h("em",null,e.src),document.createTextNode(e.msg));u.append(li)}}
+function kpi(){const n=Date.now(),w=$("#kwv"),m=$("#kmv"),mf=mOk&&n-mOk<STALE;
+w.textContent=t(wOk===null?"chk":wOk?"ok":"dn");w.className=wOk===null?"":wOk?"up":"dn";$("#kws").textContent="PAPER_ONLY";
+$("#lw").className="led "+(wOk===null?"wt":wOk?"up":"dn");$("#lm").className="led "+(!mOk?"wt":mf?"up":"dn");m.textContent=t(!mOk?"chk":mf?"fresh":"stale");m.className=!mOk?"":mf?"up":"dn";$("#kms").textContent=mOk?lat+" ms":"";
+$("#kov").textContent=log.length;const lp=log.reduce((s,e)=>Math.max(s,e.timestamp_ms),0);
+$("#kos").textContent=log.length?sg(log.reduce((s,e)=>s+e.profit,0))+" "+log[0].start_asset:"";
+$("#klv").textContent=lp?t("ago",{x:ago(n-lp)}):t("none");$("#kls").textContent=lp?tm(lp):""}
+async function pullM(){const t0=performance.now();
+try{const r=await fetch(M+"/api/v3/ticker/bookTicker?symbols="+encodeURIComponent(JSON.stringify(SY)),{cache:"no-store"});
+if(!r.ok)throw Error("HTTP "+r.status);const a=await r.json(),n=Date.now();if(!Array.isArray(a))throw Error("bad response");
+for(const x of a){const q={bid:+x.bidPrice,ask:+x.askPrice,bq:+x.bidQty,aq:+x.askQty,t:n};
+if(![q.bid,q.ask,q.bq,q.aq].every(v=>Number.isFinite(v)&&v>0)||q.bid>q.ask||!SY.includes(x.symbol))continue;
+const o=Q[x.symbol];q.dir=o?Math.sign(q.bid-o.bid):0;Q[x.symbol]=q;(H[x.symbol]=H[x.symbol]||[]).push((q.bid+q.ask)/2);if(H[x.symbol].length>40)H[x.symbol].shift()}
+mOk=n;lat=Math.round(performance.now()-t0);const b=best();if(b){net.push(b.bps);if(net.length>150)net.shift()}
+market();scan();hero()}catch(e){err("market",e.message+" ("+t("eh")+")")}kpi()}
+async function pullW(){try{const[a,b]=await Promise.all([fetch(W+"/health",{cache:"no-store"}),fetch(W+"/latest",{cache:"no-store"})]);
+if(!a.ok||!b.ok)throw Error("HTTP "+(a.ok?b.status:a.status));const hh=await a.json(),ll=await b.json();wOk=hh.ok===true&&hh.mode==="PAPER_ONLY";
+const e=ll&&ll.event;if(e&&okEv(e)&&!log.some(x=>x.timestamp_ms===e.timestamp_ms&&x.cycle.join()===e.cycle.join())){log.push(slim(e));log=log.slice(-200);set("mr_log",JSON.stringify(log));paper()}}
+catch(e){wOk=false;err("worker",e.message)}kpi()}
+function applyLang(){const d=document.documentElement;d.lang=lang;d.dir=lang==="ar"?"rtl":"ltr";
+document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));$("#bl").textContent=t("lang");hero();paper();scan();kpi()}
+function inputs(){for(const k of["amt","fee","slip","thr"])$("#i-"+k).value=cfg[k]}
+const rng={amt:[1,1e7],fee:[0,1],slip:[0,500],thr:[0,1e4]};
+for(const k of Object.keys(rng))$("#i-"+k).addEventListener("input",e=>{cfg[k]=num(e.target.value,cfg[k],...rng[k]);set("mr_cfg",JSON.stringify(cfg));scan();hero()});
+for(const k of Object.keys(rng))cfg[k]=num(cfg[k],{amt:100,fee:.1,slip:2,thr:8}[k],...rng[k]);
+$("#bl").onclick=()=>{lang=lang==="ar"?"en":"ar";set("mr_lang",lang);applyLang();alerts()};
+$("#bt").onclick=()=>{const r=document.documentElement,n=r.dataset.theme==="light"?"dark":"light";r.dataset.theme=n;set("mr_theme",n)};
+$("#cl").onclick=()=>{if(confirm(t("sure"))){log=[];set("mr_log","[]");paper();kpi()}};
+document.documentElement.dataset.theme=get("mr_theme")||(matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");
+inputs();applyLang();alerts();
+const loop=(f,ms)=>{f();setInterval(()=>{if(!document.hidden)f()},ms)};
+loop(pullM,2000);loop(pullW,5000);setInterval(kpi,1000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){pullM();pullW()}});
+})();
 </script>
 </body>
 </html>
